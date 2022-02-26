@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  servicediscovery:
+    image: servicediscovery:1.1
+    build: ./servicediscovery
+    ports:
+      - 8761:8761
+    networks:
+      ecommerce-api.network:
+    restart: on-failure
+    
+  apigateway:
+    image: apigateway:1.1
+    build: ./apigateway
+    ports:
+      - 8765:8765
+    networks:
+      ecommerce-api.network:
+    restart: on-failure
+    depends_on:
+      - servicediscovery
+    environment:
+      - EUREKA_HOST=servicediscovery
+
+  mysqldb:
+    image: mysql:latest
+    ports:
+      - 3309:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=Nish@1996
+    networks:
+      ecommerce-api.network:
+    volumes:
+      - ./dbdata:/var/lib/mysql
+
+  userregistrationservice:
+    image: userregistrationservice:1.1
+    build: ./userregistrationservice
+    ports:
+      - 9020:9020
+    networks:
+      ecommerce-api.network:
+    restart: on-failure
+    depends_on: 
+      - servicediscovery
+      - mysqldb
+    environment:
+      - MYSQL_HOST=mysqldb
+      - EUREKA_HOST=servicediscovery
+
+  catalogservice:
+    image: catalogservice:1.1
+    build: ./catalogservice
+    ports:
+      - 8000:8000
+    networks:
+      ecommerce-api.network:
+    restart: on-failure
+    depends_on:
+      - servicediscovery
+      - mysqldb
+    environment:
+      - MYSQL_HOST=mysqldb
+      - EUREKA_HOST=servicediscovery
+
+  shoppingcart:
+    image: shoppingcart:1.1
+    build: ./shoppingcart
+    ports:
+      - 8010:8010
+    networks:
+      ecommerce-api.network:
+    restart: on-failure
+    depends_on:
+      - servicediscovery
+      - mysqldb
+    environment:
+      - MYSQL_HOST=mysqldb
+      - EUREKA_HOST=servicediscovery
+
+
+networks:
+  ecommerce-api.network:
+
+volumes:
+  dbdata:

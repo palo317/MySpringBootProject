@@ -1,0 +1,8 @@
+com/allstate/catalogservice/exceptions/ProductWithIDNotPresentException.class
+com/allstate/catalogservice/model/Catalog.class
+com/allstate/catalogservice/controller/CatalogController.class
+com/allstate/catalogservice/repository/CatalogRepository.class
+com/allstate/catalogservice/exceptions/ProductWithIDAlreadyPresentException.class
+com/allstate/catalogservice/CatalogserviceApplication.class
+com/allstate/catalogservice/service/CatalogService.class
+com/allstate/catalogservice/exceptions/ApiExceptionHandler.class
